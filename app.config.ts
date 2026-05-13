@@ -87,11 +87,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'expo-build-properties',
       {
         android: {
-          compileSdkVersion: 36,
-          targetSdkVersion: 36,
+          compileSdkVersion: 35,
+          targetSdkVersion: 35,
           minSdkVersion: 24,
-          buildToolsVersion: '36.0.0',
-          kotlinVersion: '2.1.20',
+          buildToolsVersion: '35.0.0',
+          kotlinVersion: '1.9.25',
         },
         ios: {
           deploymentTarget: '15.1',
