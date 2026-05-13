@@ -30,7 +30,7 @@ export const detectSubscriptions = functions.https.onCall(async (data: unknown, 
 
   const subscriptions: admin.firestore.DocumentData[] = [];
 
-  for (const [merchant, txs] of Object.entries(merchantGroups)) {
+  for (const [, txs] of Object.entries(merchantGroups)) {
     if (txs.length < 2) continue;
 
     // Check if amounts are consistent
@@ -91,11 +91,7 @@ export const detectSubscriptions = functions.https.onCall(async (data: unknown, 
   return { detected: subscriptions.length, subscriptions };
 });
 
-// Generate AI-powered insights
-export const generateInsights = functions.https.onCall(async (data: unknown, context) => {
-  const userId = context.auth?.uid;
-  if (!userId) throw new functions.https.HttpsError('unauthenticated', 'Not authenticated');
-
+async function generateInsightsForUser(userId: string) {
   const thirtyDaysAgo = subDays(new Date(), 30);
   const txSnapshot = await db
     .collection('users')
@@ -117,7 +113,6 @@ export const generateInsights = functions.https.onCall(async (data: unknown, con
     }
   }
 
-  // Top spending category insight
   const topCategory = Object.entries(categoryTotals).sort(([, a], [, b]) => b - a)[0];
 
   if (topCategory) {
@@ -148,6 +143,13 @@ export const generateInsights = functions.https.onCall(async (data: unknown, con
   await batch.commit();
 
   return { generated: insights.length };
+}
+
+// Callable — generate insights for the authenticated user
+export const generateInsights = functions.https.onCall(async (_data: unknown, context) => {
+  const userId = context.auth?.uid;
+  if (!userId) throw new functions.https.HttpsError('unauthenticated', 'Not authenticated');
+  return generateInsightsForUser(userId);
 });
 
 // Run insights generation daily at 9 AM IST
@@ -156,13 +158,7 @@ export const scheduledInsights = functions.pubsub
   .timeZone('Asia/Kolkata')
   .onRun(async () => {
     const usersSnap = await db.collection('users').get();
-    const jobs = usersSnap.docs.map((doc) =>
-      generateInsights.run({
-        data: {},
-        auth: { uid: doc.id, token: {} as never },
-        rawRequest: {} as never,
-      }),
-    );
+    const jobs = usersSnap.docs.map((doc) => generateInsightsForUser(doc.id));
     await Promise.allSettled(jobs);
     functions.logger.info('Insights generated for all users');
   });
