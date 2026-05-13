@@ -1,0 +1,135 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helpers ──────────────────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    function isValidAmount() {
+      return request.resource.data.amount is number
+          && request.resource.data.amount > 0
+          && request.resource.data.amount < 10000000;
+    }
+
+    function isValidTransactionType() {
+      return request.resource.data.type in ['debit', 'credit', 'transfer'];
+    }
+
+    function notUpdating(field) {
+      return !(field in request.resource.data.diff(resource.data).affectedKeys());
+    }
+
+    function isRecentTimestamp(ts) {
+      return ts > request.time - duration.value(5, 'm');
+    }
+
+    // ─── User Documents ────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId)
+                    && request.resource.data.keys().hasAll(['uid', 'email', 'createdAt'])
+                    && request.resource.data.uid == userId;
+      allow update: if isOwner(userId)
+                    && notUpdating('uid')
+                    && notUpdating('createdAt')
+                    && notUpdating('email');
+      allow delete: if false; // soft-delete only via Cloud Function
+
+      // ─── Transactions ────────────────────────────────────────────
+      match /transactions/{txId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+                      && isValidAmount()
+                      && isValidTransactionType()
+                      && request.resource.data.userId == userId;
+        allow update: if isOwner(userId)
+                      && notUpdating('userId')
+                      && notUpdating('smsId')
+                      && notUpdating('source')
+                      && isValidAmount()
+                      && isValidTransactionType();
+        allow delete: if isOwner(userId);
+      }
+
+      // ─── Budgets ──────────────────────────────────────────────────
+      match /budgets/{budgetId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+                      && request.resource.data.amount is number
+                      && request.resource.data.amount > 0
+                      && request.resource.data.period in ['daily', 'weekly', 'monthly', 'yearly'];
+        allow update: if isOwner(userId)
+                      && notUpdating('userId')
+                      && notUpdating('createdAt');
+        allow delete: if isOwner(userId);
+      }
+
+      // ─── Analytics ───────────────────────────────────────────────
+      match /analytics/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Written by Cloud Functions only
+      }
+
+      // ─── Insights ────────────────────────────────────────────────
+      match /insights/{insightId} {
+        allow read: if isOwner(userId);
+        allow update: if isOwner(userId)
+                      && request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['isRead', 'isDismissed']);
+        allow create, delete: if false; // Cloud Functions only
+      }
+
+      // ─── Subscriptions ────────────────────────────────────────────
+      match /subscriptions/{subId} {
+        allow read: if isOwner(userId);
+        allow update: if isOwner(userId)
+                      && request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['isActive']);
+        allow create, delete: if false; // Cloud Functions only
+      }
+
+      // ─── Devices ──────────────────────────────────────────────────
+      match /devices/{deviceId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // ─── SMS Processing ───────────────────────────────────────────
+      match /sms_processing/{recordId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // ─── Notifications ────────────────────────────────────────────
+      match /notifications/{notifId} {
+        allow read: if isOwner(userId);
+        allow update: if isOwner(userId)
+                      && request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['isRead']);
+        allow create, delete: if false;
+      }
+    }
+
+    // ─── Global Categories (read-only for authenticated users) ─────
+    match /categories/{categoryId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    // ─── Feature Flags (read-only for authenticated users) ─────────
+    match /feature_flags/{flagId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    // ─── Deny everything else ──────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

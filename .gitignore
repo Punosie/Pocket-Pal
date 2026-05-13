@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+functions/node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# Env
+.env
+.env.local
+.env.development
+.env.production
+
+# Secrets — NEVER COMMIT
+google-services.json
+GoogleService-Info.plist
+service-account.json
+*.keystore
+
+# Native builds
+android/
+ios/
+
+# macOS
+.DS_Store
+*.swp
+
+# Logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Test coverage
+coverage/
+lcov-info/
+
+# TypeScript
+*.tsbuildinfo
+functions/lib/

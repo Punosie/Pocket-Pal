@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 108 92 231;
+    --color-accent: 255 127 80;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-strong {
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, #5a4bd1 0%, #8566ff 100%);
+  }
+
+  .gradient-dark {
+    background: linear-gradient(180deg, #0d0d1f 0%, #0a0a0f 100%);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #8566ff 0%, #ff7f50 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(108, 92, 231, 0.4);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 20px rgba(255, 127, 80, 0.4);
+  }
+}
