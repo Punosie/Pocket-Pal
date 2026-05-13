@@ -18,8 +18,7 @@
         "APP_VARIANT": "development"
       },
       "android": {
-        "buildType": "apk",
-        "gradleCommand": ":app:assembleDebug"
+        "buildType": "apk"
       },
       "ios": {
         "simulator": false
