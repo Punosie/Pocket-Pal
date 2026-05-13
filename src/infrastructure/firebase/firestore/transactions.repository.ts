@@ -1,6 +1,6 @@
 import type { Transaction, TransactionFilter } from '@/types';
 
-import { collections, serverTimestamp } from '../config';
+import { collections, db, serverTimestamp } from '../config';
 
 import type { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
@@ -78,7 +78,7 @@ export class TransactionsRepository {
     const BATCH_SIZE = 500;
 
     for (let i = 0; i < transactions.length; i += BATCH_SIZE) {
-      const batch = collections.users().firestore.batch();
+      const batch = db.batch();
       const chunk = transactions.slice(i, i + BATCH_SIZE);
 
       for (const tx of chunk) {

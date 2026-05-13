@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  View,
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -199,13 +200,14 @@ export default function RegisterScreen() {
             )}
           />
 
-          <Button
-            label="Create Account"
-            onPress={handleSubmit(onSubmit)}
-            isLoading={isLoading}
-            fullWidth
-            style={{ marginTop: spacing[2] }}
-          />
+          <View style={{ marginTop: spacing[2] }}>
+            <Button
+              label="Create Account"
+              onPress={handleSubmit(onSubmit)}
+              isLoading={isLoading}
+              fullWidth
+            />
+          </View>
         </MotiView>
 
         <MotiView

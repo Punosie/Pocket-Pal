@@ -135,8 +135,6 @@ export default function TransactionsScreen() {
             ) : undefined
           }
           onRightIconPress={() => setSearch('')}
-          onFocus={() => setIsSearchFocused(true)}
-          onBlur={() => setIsSearchFocused(false)}
           returnKeyType="search"
         />
       </View>
@@ -170,7 +168,6 @@ export default function TransactionsScreen() {
         <FlashList
           data={items}
           renderItem={renderItem}
-          estimatedItemSize={88}
           keyExtractor={(item, i) =>
             item.type === 'header' ? `header-${item.date}` : (item.data.id ?? String(i))
           }

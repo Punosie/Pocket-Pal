@@ -33,5 +33,5 @@
     "expo-env.d.ts",
     "nativewind-env.d.ts"
   ],
-  "exclude": ["node_modules", "functions/node_modules"]
+  "exclude": ["node_modules", "functions", "functions/node_modules"]
 }

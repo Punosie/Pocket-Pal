@@ -74,7 +74,7 @@ export const Input = forwardRef<TextInput, InputProps>(
 
           <TextInput
             ref={ref}
-            style={[styles.input, leftIcon && styles.inputWithLeft, style]}
+            style={[styles.input, leftIcon ? styles.inputWithLeft : undefined, style]}
             placeholderTextColor={darkTheme.text.disabled}
             onFocus={handleFocus}
             onBlur={handleBlur}

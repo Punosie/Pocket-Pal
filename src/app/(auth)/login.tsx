@@ -170,13 +170,14 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
 
-          <Button
-            label="Sign In"
-            onPress={handleSubmit(onSubmit)}
-            isLoading={isLoading}
-            fullWidth
-            style={{ marginTop: spacing[2] }}
-          />
+          <View style={{ marginTop: spacing[2] }}>
+            <Button
+              label="Sign In"
+              onPress={handleSubmit(onSubmit)}
+              isLoading={isLoading}
+              fullWidth
+            />
+          </View>
         </MotiView>
 
         {/* Sign up link */}
