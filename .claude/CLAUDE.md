@@ -55,7 +55,7 @@ src/
 - Expo: ^55.0.24
 - React: 19.2.6
 - React Native: 0.83.6
-- React Native Reanimated: 4.3.1 (requires `react-native-worklets: 0.8.x`)
+- React Native Reanimated: 4.2.1 (requires `react-native-worklets: 0.7.4`)
 - Zustand: ^5.0.13 — import from `zustand/react` not `zustand`
 - NativeWind: ^4.2.3
 - TanStack Query: ^5.100.10
