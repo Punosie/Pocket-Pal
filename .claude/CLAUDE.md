@@ -52,13 +52,13 @@ src/
 
 ## Tech Stack Versions (SDK 55)
 
-- Expo: ^55.0.0
-- React: 19.2.0
+- Expo: ^55.0.24
+- React: 19.2.6
 - React Native: 0.83.6
-- React Native Reanimated: 4.2.1
-- Zustand: ^5.0.5 — import from `zustand/react` not `zustand`
-- NativeWind: ^4.1.23
-- TanStack Query: ^5.80.0
+- React Native Reanimated: 4.3.1 (requires `react-native-worklets: 0.8.x`)
+- Zustand: ^5.0.13 — import from `zustand/react` not `zustand`
+- NativeWind: ^4.2.3
+- TanStack Query: ^5.100.10
 
 ## Key Conventions
 
