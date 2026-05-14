@@ -19,7 +19,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage --passWithNoTests",
     "test:e2e": "detox test",
     "functions:serve": "cd functions && npm run serve",
     "functions:deploy": "firebase deploy --only functions",
