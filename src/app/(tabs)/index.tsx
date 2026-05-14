@@ -218,7 +218,9 @@ export default function DashboardScreen() {
                   key={tx.id}
                   transaction={tx}
                   index={i}
-                  onPress={(t) => router.push(`/transaction/${t.id}`)}
+                  onPress={(t) =>
+                    router.push({ pathname: '/transaction/[id]', params: { id: t.id } })
+                  }
                 />
               ))
             ) : (

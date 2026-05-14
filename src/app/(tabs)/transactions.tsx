@@ -96,7 +96,7 @@ export default function TransactionsScreen() {
           <TransactionCard
             transaction={item.data}
             index={index}
-            onPress={(tx) => router.push(`/transaction/${tx.id}`)}
+            onPress={(tx) => router.push({ pathname: '/transaction/[id]', params: { id: tx.id } })}
           />
         </View>
       );

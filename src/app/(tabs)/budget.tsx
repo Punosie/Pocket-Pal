@@ -205,7 +205,7 @@ export default function BudgetScreen() {
             transition={{ type: 'spring', delay: 140 + i * 60, damping: 24, stiffness: 300 }}
           >
             <TouchableOpacity
-              onPress={() => router.push(`/budget/${budget.id}`)}
+              onPress={() => router.push({ pathname: '/budget/[id]', params: { id: budget.id } })}
               activeOpacity={0.9}
             >
               <BudgetProgressCard budget={budget} />

@@ -1,4 +1,5 @@
 import analytics from '@react-native-firebase/analytics';
+import { getApp } from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import crashlytics from '@react-native-firebase/crashlytics';
 import firestore from '@react-native-firebase/firestore';
@@ -7,17 +8,19 @@ import messaging from '@react-native-firebase/messaging';
 import perf from '@react-native-firebase/perf';
 import remoteConfig from '@react-native-firebase/remote-config';
 
-export const db = firestore();
-export const fbAuth = auth();
+const app = getApp();
+
+export const db = firestore(app);
+export const fbAuth = auth(app);
+export const fbMessaging = messaging();
 export const fbFunctions = functions();
 export const fbRemoteConfig = remoteConfig();
 export const fbAnalytics = analytics();
 export const fbCrashlytics = crashlytics();
 export const fbPerf = perf();
-export const fbMessaging = messaging();
 
-// Enable offline persistence
-firestore().settings({
+// Enable offline persistence — must be called before any other Firestore operations
+db.settings({
   persistence: true,
   cacheSizeBytes: firestore.CACHE_SIZE_UNLIMITED,
 });

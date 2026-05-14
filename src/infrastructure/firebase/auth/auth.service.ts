@@ -39,12 +39,16 @@ export class AuthService {
     try {
       const credential = await auth().createUserWithEmailAndPassword(email, password);
       await credential.user.updateProfile({ displayName });
-      await userRepository.createProfile(credential.user.uid, {
-        email,
-        displayName,
-        photoURL: null,
-        phoneNumber: null,
-      });
+      try {
+        await userRepository.createProfile(credential.user.uid, {
+          email,
+          displayName,
+          photoURL: null,
+          phoneNumber: null,
+        });
+      } catch {
+        // Firestore write failed (DB may not exist yet) — auth still succeeded
+      }
       await this.postSignIn(credential.user.uid);
       void analytics().logSignUp({ method: 'email' });
       return credential;
@@ -92,9 +96,13 @@ export class AuthService {
   }
 
   private async postSignIn(uid: string) {
-    await crashlytics().setUserId(uid);
-    void analytics().setUserId(uid);
-    await userRepository.updateLastSeen(uid);
+    try {
+      await crashlytics().setUserId(uid);
+      void analytics().setUserId(uid);
+      await userRepository.updateLastSeen(uid);
+    } catch {
+      // Firestore unavailable — auth state is still valid
+    }
   }
 
   private transformAuthError(error: unknown): Error {
